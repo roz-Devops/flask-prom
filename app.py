@@ -13,11 +13,14 @@ mysql_query_duration = Histogram('mysql_query_duration_seconds', 'Time taken to 
 db_config = {
     'user': 'root',       # Your MySQL username
     'password': 'password',  # Your MySQL password
-    #'host': '127.0.0.1',  # Change this if you're using Kubernetes or different host
-    'host': 'mysql-service.default.svc.cluster.local',
+    'host': '127.0.0.1',  # Change this if you're using Kubernetes or different host
+    #'host': 'mysql-service.default.svc.cluster.local',
     'port': '3306',      # Port for MySQL
     'database': 'demo_db'  # Ensure this matches the database name
 }
+
+def get_db_connection():
+    return mysql.connector.connect(**db_config)
 
 # Function to execute a MySQL query and collect metrics
 def execute_mysql_query(query):
@@ -70,6 +73,22 @@ def query():
 def metrics():
     return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
 
+
+@app.route('/add_color')
+def add_color():
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Insert query
+        query = "INSERT INTO colors (color, color_type) VALUES (%s, %s)"
+        cursor.execute(query, ("coral", "basic"))
+        conn.commit()
+
+        # Return the ID of the newly created record
+        new_id = cursor.lastrowid
+
+        return jsonify({"message": "Record created successfully.", "id": new_id}), 201
+
 # Run the Flask app
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5001)
