@@ -31,6 +31,31 @@ spec:
         image: grafana/grafana:latest
         ports:
         - containerPort: 3000
+        volumeMounts:
+        - name: grafana-datasources
+          mountPath: /etc/grafana/provisioning/datasources
+          readOnly: true
         env:
         - name: GF_SECURITY_ADMIN_PASSWORD
-          value: "admin"  # Set a secure password for Grafana admin
+          value: "admin"
+      volumes:
+      - name: grafana-datasources
+        configMap:
+          name: grafana-datasources
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: default
+data:
+  prometheus-datasource.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://prometheus-service.default.svc.cluster.local:9090
+        access: proxy
+        isDefault: true
+
