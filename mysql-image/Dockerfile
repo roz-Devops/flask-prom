@@ -3,7 +3,7 @@ FROM mysql:8.3
 
 # Environment variables
 ENV MYSQL_DATABASE demo_db
-ENV MYSQL_USER user
+ENV MYSQL_USER root
 ENV MYSQL_PASSWORD password
 ENV MYSQL_ROOT_PASSWORD password
 
