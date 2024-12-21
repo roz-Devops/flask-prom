@@ -13,8 +13,8 @@ mysql_query_duration = Histogram('mysql_query_duration_seconds', 'Time taken to 
 db_config = {
     'user': 'root',       # Your MySQL username
     'password': 'password',  # Your MySQL password
-    'host': '127.0.0.1',  # Change this if you're using Kubernetes or different host
-    #'host': 'mysql-service.default.svc.cluster.local',
+    #'host': '127.0.0.1',  # Change this if you're using Kubernetes or different host
+    'host': 'mysql-service.default.svc.cluster.local',
     'port': '3306',      # Port for MySQL
     'database': 'demo_db'  # Ensure this matches the database name
 }

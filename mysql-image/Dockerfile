@@ -11,4 +11,4 @@ ENV MYSQL_ROOT_PASSWORD password
 EXPOSE 3306
 
 # Copy SQL scripts to initialize database
-COPY ./dump /docker-entrypoint-initdb.d
+COPY ./dump.sql /docker-entrypoint-initdb.d
