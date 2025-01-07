@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+  labels:
+    app: mysql
+spec:
+  selector:
+    app: mysql
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: rozdockerforever/mysql:1.0
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: password
+        - name: MYSQL_DATABASE
+          value: demo_db
+        - name: MYSQL_USER
+          value: user
+        - name: MYSQL_PASSWORD
+          value: password
+
+
+# vault write database/roles/mysqlpod \
+#     db_name=demo_pod \
+#     creation_statements="CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';GRANT SELECT, INSERT, UPDATE, DELETE ON *.* TO '{{name}}'@'%';" \
+#     default_ttl="1h" \
+#     max_ttl="24h"
+
+# vault write database/config/demo_pod \
+#   plugin_name=mysql-database-plugin \
+#   connection_url="root:password@tcp(mysql-deployment-54df6b4bb-pjqzc:3306)/demo_pod" \
+#   allowed_roles="mysqlpod"
+
+
+#   kubectl exec -n vault vault-0 -- nslookup mysql-deployment-54df6b4bb-pjqzc.default.svc.cluster.local
+
+#   kubectl exec -n vault <vault-pod> -- nslookup mysql-deployment-54df6b4bb-pjqzc.default.svc.cluster.local
+
+# mysql -h mysql-fd6754dc7-96qkt -u root -p password
+# query-app-service.svc.cluster.local
+
+#ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
+#ALTER USER 'user' IDENTIFIED WITH mysql_native_password BY 'password';
+
+
+
+
+
+#nslookup mysql-service.default.svc.cluster.local
